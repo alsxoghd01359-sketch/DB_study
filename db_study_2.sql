@@ -58,24 +58,61 @@ select sum(salary)
 from emp;
 
 # 부서별, 1년 고정 지출(인건비)
+select *
+from emp;
+select *
+from dept;
+select dept_id, sum(salary)
+from emp
+group by dept_id;
+
+## join 사용
 select d.name, sum(e.salary)
 from dept as d inner join emp as e
 on d.id = e.dept_id
 group by d.id;
 
 # 부서별, 최고연봉
+select dept_id, max(salary)
+from emp
+group by dept_id;
+
+select *
+from dept;
+
+
+
+## join 사용
 select d.name, max(e.salary)
 from dept as d inner join emp as e
 on d.id = e.dept_id
 group by d.id;
 
 # 부서별, 최저연봉
+select dept_id, min(salary)
+from emp
+group by dept_id;
+
+select *
+from dept;
+
+## join 사용
 select d.name, min(e.salary)
 from dept as d inner join emp as e
 on d.id = e.dept_id
 group by d.id;
 
 # 부서별, 평균연봉
+select dept_id, avg(salary)
+from emp
+group by dept_id;
+
+select *
+from dept;
+
+
+
+## join 사용
 select d.name, avg(e.salary)
 from dept as d inner join emp as e
 on d.id = e.dept_id
@@ -83,18 +120,19 @@ group by d.id;
 
 # 부서별, 부서명, 사원리스트, 평균연봉, 최고연봉, 최소연봉, 사원수 
 ## V1(조인 안한 버전)
-select d.name, group_concat(e.name separator ','), avg(e.salary), max(e.salary), min(e.salary), count(e.id)
-from dept as d, emp as e
-group by d.id;
+select d.name, group_concat(e.name), avg(e.salary), max(e.salary), min(e.salary), count(e.id)
+from emp as e, dept as d
+where e.dept_id = d.id
+group by e.dept_id;
 
 ## V2(조인해서 부서명까지 나오는 버전)
-select d.name, group_concat(e.name separator ','), avg(e.salary), max(e.salary), min(e.salary), count(e.id)
+select d.name, group_concat(e.name), avg(e.salary), max(e.salary), min(e.salary), count(e.id)
 from dept as d inner join emp as e
 on d.id = e.dept_id
 group by d.id;
 
 ## V3(V2에서 평균연봉이 5000이상인 부서로 추리기)
-select d.name, group_concat(e.name separator ','), avg(e.salary), max(e.salary), min(e.salary), count(e.id)
+select d.name, group_concat(e.name), avg(e.salary), max(e.salary), min(e.salary), count(e.id)
 from dept as d inner join emp as e
 on d.id = e.dept_id
 group by d.id
