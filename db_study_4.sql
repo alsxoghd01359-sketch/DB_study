@@ -330,6 +330,7 @@ inner join products as p
 on o.product_id = p.product_id
 group by o.order_id
 order by o.order_id asc;
+
 --   14. 한 번도 주문되지 않은 상품 을 조회하시오.
 select *
 from order_items as o
@@ -341,16 +342,46 @@ having count(o.product_id) = 0;
 select *
 from members;
 --   15. 주문 이력이 전혀 없는 회원 을 조회하시오.
-select *
+select m.*
 from orders as o
-inner join members as m
+right join members as m
 on o.member_id = m.member_id
-group by o.member_id;
+where o.member_id is null;
 
 --   16. 리뷰가 하나도 없는 상품을 판매사 이름과 함께 조회하시오.
---   17. 결제 정보가 없는 주문을 찾아내시오. 이런 주문이 존재하는 이유는?
+select p.*, s.seller_name
+from reviews as r
+right join products as p
+on r.product_id = p.product_id
+inner join sellers as s
+on p.seller_id = s.seller_id
+where r.product_id is null;
+
+select *
+from sellers;
+
+--   17. 결제 정보가 없는 주문을 찾아내시오. 이런 주문이 존재하는 이유는? = cancel 해서
+select *
+from orders as o
+left join payments as p
+on o.order_id = p.order_id
+where payment_id is null;
+
 --   18. 상품별 판매수량과 판매금액을 조회하되, 취소·환불된 주문은 제외하시오.
+select o.order_id, oi.qty, oi.unit_price
+from order_items as oi
+inner join orders as o
+on oi.order_id = o.order_id
+where o.status not in ('CANCELLED', 'REFUNDED');
+
 --   19. 판매사별 매출액과, 거기서 플랫폼이 떼가는 수수료 (`매출 × commission_rate`)를 조회하시오.
+select *
+from products as p
+inner join sellers as s;
+
+select *
+from products;
+
 --   20. 상품의 대분류 카테고리명 을 함께 조회하시오. (예: 토너 → 뷰티) 카테고리는 최대 3단계다.
 --   21. 각 회원의 추천인 이름을 함께 조회하시오. 추천인이 없는 회원도 나와야 한다.
 --   22. 추천인 역할을 한 회원별로, 자기가 추천한 회원 수와 그 회원들의 총 구매액을 조회하시오.
